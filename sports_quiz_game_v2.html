@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超级体育小将抢答赛！</title>
+    <style>
+        /* General Styles V2 */
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+            background-color: #E0F7FA; /* Light Cyan - Brighter for classroom */
+            color: #212121; /* Darker Grey for better contrast */
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow-x: hidden; /* Prevent scrollbars from confetti/fireworks */
+        }
+
+        #game-container-v2 {
+            background-color: #FFFFFF; /* White */
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            width: 95%;
+            max-width: 1000px; /* Wider for dual player layout */
+            min-height: 550px; /* Taller for more content */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative; /* For absolute positioning of celebration container */
+            overflow: hidden; /* Clip animations within the container if desired, or body for full screen */
+        }
+
+        .screen-v2 {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInV2 0.6s ease-in-out;
+            width: 100%;
+        }
+
+        .screen-v2.active-v2 {
+            display: flex;
+        }
+
+        @keyframes fadeInV2 {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #00796B; /* Teal */
+            font-size: 3em; /* Larger for classroom */
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #0288D1; /* Light Blue */
+            font-size: 2.2em;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #5E35B1; /* Deep Purple */
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2em; /* Larger default text */
+            line-height: 1.7;
+            color: #424242;
+        }
+
+        /* Buttons V2 */
+        button {
+            background-color: #FF7043; /* Coral */
+            color: white;
+            border: none;
+            padding: 15px 30px; /* Larger buttons */
+            font-size: 1.4em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            margin-top: 20px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #F4511E; /* Deep Orange */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        button:active {
+            transform: translateY(0px);
+            box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+        }
+
+        /* Start Screen V2 */
+        #start-screen-v2 h1 {
+            font-size: 3.5em;
+        }
+        #start-screen-v2 p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            max-width: 700px;
+        }
+        #start-round-button {
+            padding: 18px 45px;
+            font-size: 1.8em;
+            background-color: #4CAF50; /* Green */
+        }
+        #start-round-button:hover {
+            background-color: #388E3C; /* Darker Green */
+        }
+
+        .team-names {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 30px;
+        }
+
+        .team-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .team-input label {
+            font-size: 1.1em;
+            color: #00796B;
+            margin-bottom: 8px;
+        }
+
+        .team-input input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #BDBDBD; /* Grey border */
+            border-radius: 8px;
+            text-align: center;
+            width: 200px;
+        }
+
+        /* Quiz Screen V2 */
+        #shared-question-area {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #timer-v2 {
+            font-size: 2em; /* Prominent timer */
+            color: #D32F2F; /* Red for urgency */
+            font-weight: bold;
+            margin-bottom: 10px;
+            background-color: #FFEBEE; /* Light Red background */
+            padding: 5px 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        #question-counter-v2 {
+            font-size: 1.1em;
+            color: #757575;
+            margin-bottom: 15px;
+        }
+
+        #question-text-v2 {
+            font-size: 2.2em; /* Large question text */
+            min-height: 80px;
+            color: #303F9F; /* Indigo */
+            margin-bottom: 15px;
+        }
+
+        #question-image-container-v2 img {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            max-height: 200px; /* Adjust as needed */
+        }
+
+        #central-feedback-area {
+            margin: 15px 0;
+            min-height: 40px;
+        }
+
+        #feedback-text-v2 {
+            font-size: 1.8em; /* Large feedback */
+            font-weight: bold;
+        }
+
+        #feedback-text-v2.correct {
+            color: #388E3C; /* Dark Green */
+        }
+
+        #feedback-text-v2.incorrect {
+            color: #C62828; /* Dark Red */
+        }
+
+        #feedback-text-v2.buzz-player1 {
+            color: #1976D2; /* Blue for Player 1 */
+        }
+
+        #feedback-text-v2.buzz-player2 {
+            color: #D32F2F; /* Red for Player 2 */
+        }
+
+        #players-area {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            gap: 20px; /* Space between player zones */
+        }
+
+        .player-zone {
+            background-color: #F5F5F5; /* Light Grey background for zones */
+            padding: 20px;
+            border-radius: 15px;
+            flex: 1; /* Equal width */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05) inset;
+        }
+
+        #player1-area {
+            border: 3px solid #2196F3; /* Blue border for Player 1 */
+        }
+
+        #player2-area {
+            border: 3px solid #F44336; /* Red border for Player 2 */
+        }
+
+        .score-board-v2 {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        #player1-area .score-board-v2 { color: #1E88E5; /* Blue */ }
+        #player2-area .score-board-v2 { color: #E53935; /* Red */ }
+
+        .buzz-button {
+            width: 80%;
+            max-width: 250px;
+            padding: 20px;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+        }
+
+        #player1-buzz-button { background-color: #2196F3; /* Blue */ }
+        #player1-buzz-button:hover { background-color: #1976D2; }
+
+        #player2-buzz-button { background-color: #F44336; /* Red */ }
+        #player2-buzz-button:hover { background-color: #D32F2F; }
+
+        .buzz-button.disabled {
+            background-color: #9E9E9E !important; /* Grey when disabled */
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        .options-area-v2 {
+            display: grid;
+            grid-template-columns: 1fr; /* Single column for options initially */
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+            min-height: 150px; /* Reserve space for options */
+        }
+
+        .options-area-v2 .option-button-v2 {
+            background-color: #78909C; /* Blue Grey */
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            text-align: left;
+        }
+
+        .options-area-v2 .option-button-v2:hover {
+            background-color: #546E7A; /* Darker Blue Grey */
+        }
+
+        .options-area-v2 .option-button-v2.correct {
+            background-color: #66BB6A !important; /* Green for correct */
+            animation: pulseCorrectV2 0.5s;
+        }
+
+        .options-area-v2 .option-button-v2.incorrect {
+            background-color: #EF5350 !important; /* Red for incorrect */
+            animation: shakeIncorrectV2 0.5s;
+        }
+
+        .options-area-v2 .option-button-v2.disabled {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        @keyframes pulseCorrectV2 {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shakeIncorrectV2 {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        #next-question-button-v2 {
+            background-color: #FFCA28; /* Amber */
+            color: #212121;
+            margin-top: 25px;
+        }
+        #next-question-button-v2:hover {
+            background-color: #FFB300; /* Darker Amber */
+        }
+
+        /* Round End Screen V2 */
+        #round-end-screen-v2 {
+            position: relative; /* For positioning celebration container inside */
+        }
+        #round-end-screen-v2 h2#round-end-title {
+            font-size: 2.5em; /* Slightly smaller if winner text is huge */
+            color: #7CB342; /* Light Green */
+            margin-bottom: 10px;
+        }
+
+        #final-scores-v2 p {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+        #player1-final-name, #player1-final-score { color: #1E88E5; }
+        #player2-final-name, #player2-final-score { color: #E53935; }
+
+        #round-evaluation-v2 {
+            font-size: 1.5em;
+            color: #5E35B1; /* Deep Purple */
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        #restart-round-button {
+            background-color: #4CAF50; /* Green */
+            padding: 18px 45px;
+            font-size: 1.8em;
+        }
+        #restart-round-button:hover {
+            background-color: #388E3C; /* Darker Green */
+        }
+        
+        /* Celebration Animations & Winner Text - NEW */
+        #celebration-container {
+            position: absolute; /* Positioned relative to #round-end-screen-v2 or #game-container-v2 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none; 
+            z-index: 10; /* Below buttons but above other text if needed, or higher */
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px; /* Thicker trail */
+            height: 100px; 
+            background-image: linear-gradient(to top, rgba(255,255,255,0), gold, orange, red);
+            border-radius: 5px;
+            opacity: 0;
+            animation: firework-shoot 0.8s ease-out forwards;
+        }
+
+        @keyframes firework-shoot {
+            0% { opacity: 1; transform: translateY(0) scaleY(1); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-350px) scaleY(1.5); } /* Shoots up */
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            opacity: 1;
+            animation: particle-burst 0.8s ease-out forwards;
+        }
+
+        @keyframes particle-burst { /* Particle fades and shrinks */
+            0% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 15px; /* Rectangular confetti */
+            opacity: 0.9;
+            animation: confetti-fall 3.5s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-50px) rotateZ(0deg) rotateX(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotateZ(720deg) rotateX(360deg); opacity: 0; }
+        }
+
+        #winner-announcement {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            position: relative; /* To ensure it's above general text if needed */
+            z-index: 5; 
+        }
+
+        #winner-text-large {
+            font-size: 4em; /* Very Large text */
+            font-weight: bold;
+            /* Color set by JS */
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            animation: winner-appear 1s ease-out 0.5s forwards, winner-pulse 2.5s infinite 1.5s;
+            opacity: 0; /* Start hidden for animation */
+        }
+
+        @keyframes winner-appear {
+            from { opacity: 0; transform: scale(0.3) rotate(-15deg); }
+            to { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        @keyframes winner-pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(2deg); }
+        }
+        /* End of New CSS */
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            #game-container-v2 { padding: 15px; min-height: auto; }
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.8em; }
+            #question-text-v2 { font-size: 1.6em; min-height: 60px; }
+            #players-area { flex-direction: column; gap: 15px; }
+            .player-zone { padding: 15px; }
+            .buzz-button { width: 100%; font-size: 1.3em; padding: 15px; }
+            .options-area-v2 .option-button-v2 { font-size: 1em; padding: 12px; }
+            #timer-v2 { font-size: 1.5em; }
+            #feedback-text-v2 { font-size: 1.3em; }
+            .team-names { flex-direction: column; gap: 15px; align-items: center; }
+            .team-input input[type="text"] { width: 180px; }
+            #winner-text-large { font-size: 2.8em; }
+            #round-end-screen-v2 h2#round-end-title { font-size: 2em; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8em; }
+            h2 { font-size: 1.5em; }
+            button { padding: 12px 20px; font-size: 1.1em; }
+            #start-round-button, #restart-round-button { padding: 15px 30px; font-size: 1.3em; }
+            #question-text-v2 { font-size: 1.3em; }
+            #winner-text-large { font-size: 2.2em; }
+            #round-end-screen-v2 h2#round-end-title { font-size: 1.7em; }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container-v2">
+        <!-- 1. 开始/新回合界面 -->
+        <div id="start-screen-v2" class="screen-v2 active-v2">
+            <h1>超级体育小将抢答赛！</h1>
+            <p>两位小选手准备好了吗？<br>听清题目后，快速按下自己的抢答按钮！<br>每题15秒抢答时间，答对一题加1分，共20题。</p>
+            <button id="start-round-button">开始新回合</button>
+            <div class="team-names">
+                <div class="team-input">
+                    <label for="player1-name-input">蓝队名称：</label>
+                    <input type="text" id="player1-name-input" value="蓝队小旋风">
+                </div>
+                <div class="team-input">
+                    <label for="player2-name-input">红队名称：</label>
+                    <input type="text" id="player2-name-input" value="红队小闪电">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 双人抢答及答题界面 -->
+        <div id="quiz-screen-v2" class="screen-v2">
+            <div id="shared-question-area">
+                <div id="timer-v2">倒计时: <span id="time-left">15</span>s</div>
+                <div id="question-counter-v2">第 <span id="current-question-number-v2">1</span> / 20 题</div>
+                <h2 id="question-text-v2">这里将显示体育知识问题？</h2>
+                 <div id="question-image-container-v2">
+                    <img id="question-image-v2" src="" alt="题目图片" style="display:none; max-width: 80%; max-height: 150px; margin-top: 10px; border-radius: 8px;">
+                </div>
+            </div>
+
+            <div id="central-feedback-area">
+                <p id="feedback-text-v2">请抢答！</p>
+            </div>
+
+            <div id="players-area">
+                <!-- 玩家1区域 -->
+                <div id="player1-area" class="player-zone">
+                    <h3 id="player1-name-display">蓝队</h3>
+                    <div class="score-board-v2">得分: <span id="player1-score">0</span></div>
+                    <button id="player1-buzz-button" class="buzz-button">蓝队抢答</button>
+                    <div id="player1-options-area" class="options-area-v2">
+                        <!-- 玩家1的答案选项将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 玩家2区域 -->
+                <div id="player2-area" class="player-zone">
+                    <h3 id="player2-name-display">红队</h3>
+                    <div class="score-board-v2">得分: <span id="player2-score">0</span></div>
+                    <button id="player2-buzz-button" class="buzz-button">红队抢答</button>
+                    <div id="player2-options-area" class="options-area-v2">
+                        <!-- 玩家2的答案选项将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+            <button id="next-question-button-v2" style="display:none;">下一题</button> 
+        </div>
+
+        <!-- 3. 回合结束界面 -->
+        <div id="round-end-screen-v2" class="screen-v2">
+            <div id="celebration-container"> 
+                <!-- Fireworks and confetti will be added here by JS -->
+            </div>
+            <h2 id="round-end-title">本轮抢答结束！</h2> 
+            <div id="winner-announcement" style="display:none; margin-top: 15px; margin-bottom: 15px;"> 
+                <p id="winner-text-large"></p>
+            </div>
+            <div id="final-scores-v2">
+                <p><span id="player1-final-name">蓝队</span> 得分：<span id="player1-final-score">0</span></p>
+                <p><span id="player2-final-name">红队</span> 得分：<span id="player2-final-score">0</span></p>
+            </div>
+            <p id="round-evaluation-v2">评价将会显示在这里！</p>
+            <button id="restart-round-button">开始新回合 / 换下一组</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for game logic v2
+        document.addEventListener("DOMContentLoaded", () => {
+            // DOM Elements
+            const startScreen = document.getElementById("start-screen-v2");
+            const quizScreen = document.getElementById("quiz-screen-v2");
+            const roundEndScreen = document.getElementById("round-end-screen-v2");
+
+            const startRoundButton = document.getElementById("start-round-button");
+            const restartRoundButton = document.getElementById("restart-round-button");
+
+            const player1NameInput = document.getElementById("player1-name-input");
+            const player2NameInput = document.getElementById("player2-name-input");
+            const player1NameDisplay = document.getElementById("player1-name-display");
+            const player2NameDisplay = document.getElementById("player2-name-display");
+
+            const timeLeftDisplay = document.getElementById("time-left");
+            const currentQuestionNumberDisplay = document.getElementById("current-question-number-v2");
+            const questionTextDisplay = document.getElementById("question-text-v2");
+            const questionImageContainer = document.getElementById("question-image-container-v2");
+            const questionImage = document.getElementById("question-image-v2");
+
+            const feedbackTextDisplay = document.getElementById("feedback-text-v2");
+
+            const player1ScoreDisplay = document.getElementById("player1-score");
+            const player2ScoreDisplay = document.getElementById("player2-score");
+            const player1BuzzButton = document.getElementById("player1-buzz-button");
+            const player2BuzzButton = document.getElementById("player2-buzz-button");
+            const player1OptionsArea = document.getElementById("player1-options-area");
+            const player2OptionsArea = document.getElementById("player2-options-area");
+
+            const player1FinalName = document.getElementById("player1-final-name");
+            const player1FinalScore = document.getElementById("player1-final-score");
+            const player2FinalName = document.getElementById("player2-final-name");
+            const player2FinalScore = document.getElementById("player2-final-score");
+            const roundEvaluationDisplay = document.getElementById("round-evaluation-v2");
+
+            // New DOM Elements for Celebration
+            const celebrationContainer = document.getElementById("celebration-container");
+            const winnerAnnouncement = document.getElementById("winner-announcement");
+            const winnerTextLarge = document.getElementById("winner-text-large");
+            const roundEndTitle = document.getElementById("round-end-title"); 
+
+            // Game State Variables
+            let allQuestions = [];
+            let availableQuestions = []; 
+            let currentRoundQuestions = [];
+            let currentQuestionIndex = 0;
+            let player1Score = 0;
+            let player2Score = 0;
+            let player1Name = "蓝队小旋风";
+            let player2Name = "红队小闪电";
+
+            let timerInterval;
+            let timeLeft = 15;
+            const ROUND_TIME_LIMIT = 15; 
+            const QUESTIONS_PER_ROUND = 20;
+
+            let buzzedPlayer = null; 
+            let answerSelected = false;
+
+            const questionsJsonContent = `[
+              {
+                "id": 26,
+                "questionText": "夏季奥林匹克运动会每几年举办一次？",
+                "options": [
+                  { "text": "每年", "isCorrect": false },
+                  { "text": "每两年", "isCorrect": false },
+                  { "text": "每四年", "isCorrect": true },
+                  { "text": "每五年", "isCorrect": false }
+                ],
+                "category": "奥运会"
+              },
+              {
+                "id": 27,
+                "questionText": "世界杯足球赛的冠军奖杯叫什么名字？",
+                "options": [
+                  { "text": "大力神杯", "isCorrect": true },
+                  { "text": "奥运金牌", "isCorrect": false },
+                  { "text": "温布尔登杯", "isCorrect": false },
+                  { "text": "欧洲杯", "isCorrect": false }
+                ],
+                "category": "世界杯"
+              },
+              {
+                "id": 28,
+                "questionText": "中国著名的篮球运动员姚明，曾经在哪支NBA球队效力？",
+                "options": [
+                  { "text": "洛杉矶湖人队", "isCorrect": false },
+                  { "text": "休斯顿火箭队", "isCorrect": true },
+                  { "text": "芝加哥公牛队", "isCorrect": false },
+                  { "text": "金州勇士队", "isCorrect": false }
+                ],
+                "category": "体育明星"
+              },
+              {
+                "id": 29,
+                "questionText": "跳绳时，我们主要用身体的哪个部位发力让绳子转动？",
+                "options": [
+                  { "text": "手臂和肩膀", "isCorrect": false },
+                  { "text": "手腕", "isCorrect": true },
+                  { "text": "腰部", "isCorrect": false },
+                  { "text": "脚踝", "isCorrect": false }
+                ],
+                "category": "跳绳"
+              },
+              {
+                "id": 30,
+                "questionText": "短跑比赛的起跑姿势通常是？",
+                "options": [
+                  { "text": "站立式", "isCorrect": false },
+                  { "text": "蹲踞式", "isCorrect": true },
+                  { "text": "躺卧式", "isCorrect": false },
+                  { "text": "行走式", "isCorrect": false }
+                ],
+                "category": "跑步"
+              },
+              {
+                "id": 31,
+                "questionText": "奥运五环的五种颜色不包括以下哪种颜色？",
+                "options": [
+                  { "text": "蓝色", "isCorrect": false },
+                  { "text": "黑色", "isCorrect": false },
+                  { "text": "红色", "isCorrect": false },
+                  { "text": "紫色", "isCorrect": true }
+                ],
+                "category": "奥运会"
+              },
+              {
+                "id": 32,
+                "questionText": "足球比赛中，守门员可以用身体的哪个部位接触球？",
+                "options": [
+                  { "text": "只能用脚", "isCorrect": false },
+                  { "text": "只能用手", "isCorrect": false },
+                  { "text": "在禁区内可以用手和身体其他部位", "isCorrect": true },
+                  { "text": "只能用头", "isCorrect": false }
+                ],
+                "category": "足球"
+              },
+              {
+                "id": 33,
+                "questionText": "被称为“飞人”的著名篮球运动员是？",
+                "options": [
+                  { "text": "勒布朗·詹姆斯", "isCorrect": false },
+                  { "text": "迈克尔·乔丹", "isCorrect": true },
+                  { "text": "科比·布莱恩特", "isCorrect": false },
+                  { "text": "姚明", "isCorrect": false }
+                ],
+                "category": "体育明星"
+              },
+              {
+                "id": 34,
+                "questionText": "进行跑步运动时，正确的呼吸方法是？",
+                "options": [
+                  { "text": "只用鼻子吸气，只用嘴巴呼气", "isCorrect": false },
+                  { "text": "用鼻子吸气，用嘴巴和鼻子一起呼气", "isCorrect": true },
+                  { "text": "一直憋气跑", "isCorrect": false },
+                  { "text": "只用嘴巴吸气和呼气", "isCorrect": false }
+                ],
+                "category": "跑步"
+              },
+              {
+                "id": 35,
+                "questionText": "为了身体健康，小学生每天进行体育锻炼的时间最好不少于？",
+                "options": [
+                  { "text": "10分钟", "isCorrect": false },
+                  { "text": "30分钟", "isCorrect": false },
+                  { "text": "1小时", "isCorrect": true },
+                  { "text": "不需要锻炼", "isCorrect": false }
+                ],
+                "category": "健康知识"
+              },
+              {
+                "id": 36,
+                "questionText": "2008年夏季奥运会在中国的哪个城市举办？",
+                "options": [
+                  { "text": "上海", "isCorrect": false },
+                  { "text": "广州", "isCorrect": false },
+                  { "text": "北京", "isCorrect": true },
+                  { "text": "南京", "isCorrect": false }
+                ],
+                "category": "奥运会"
+              },
+              {
+                "id": 37,
+                "questionText": "篮球比赛中，投篮命中得几分（没有踩三分线）？",
+                "options": [
+                  { "text": "1分", "isCorrect": false },
+                  { "text": "2分", "isCorrect": true },
+                  { "text": "3分", "isCorrect": false },
+                  { "text": "4分", "isCorrect": false }
+                ],
+                "category": "篮球"
+              },
+              {
+                "id": 38,
+                "questionText": "阿根廷著名的足球明星，帮助国家队赢得2022年世界杯冠军的是谁？",
+                "options": [
+                  { "text": "C罗", "isCorrect": false },
+                  { "text": "内马尔", "isCorrect": false },
+                  { "text": "梅西", "isCorrect": true },
+                  { "text": "姆巴佩", "isCorrect": false }
+                ],
+                "category": "体育明星"
+              },
+              {
+                "id": 39,
+                "questionText": "跳绳时，如果绳子太长或太短，会怎么样？",
+                "options": [
+                  { "text": "跳得更快", "isCorrect": false },
+                  { "text": "更容易绊倒或打到自己", "isCorrect": true },
+                  { "text": "没有影响", "isCorrect": false },
+                  { "text": "跳得更高", "isCorrect": false }
+                ],
+                "category": "跳绳"
+              },
+              {
+                "id": 40,
+                "questionText": "长跑比赛考验运动员的什么能力？",
+                "options": [
+                  { "text": "爆发力", "isCorrect": false },
+                  { "text": "耐力", "isCorrect": true },
+                  { "text": "弹跳力", "isCorrect": false },
+                  { "text": "运气", "isCorrect": false }
+                ],
+                "category": "跑步"
+              },
+              {
+                "id": 41,
+                "questionText": "第一届现代奥林匹克运动会在哪个城市举办？",
+                "options": [
+                  { "text": "巴黎", "isCorrect": false },
+                  { "text": "伦敦", "isCorrect": false },
+                  { "text": "雅典", "isCorrect": true },
+                  { "text": "罗马", "isCorrect": false }
+                ],
+                "category": "奥运会"
+              },
+              {
+                "id": 42,
+                "questionText": "足球比赛中，如果球员故意用手触球（非守门员在禁区内），会被判罚什么？",
+                "options": [
+                  { "text": "奖励一个进球", "isCorrect": false },
+                  { "text": "手球犯规", "isCorrect": true },
+                  { "text": "什么都不判", "isCorrect": false },
+                  { "text": "角球", "isCorrect": false }
+                ],
+                "category": "足球"
+              },
+              {
+                "id": 43,
+                "questionText": "中国女子排球队因为多次获得世界冠军，被大家称为什么精神的代表？",
+                "options": [
+                  { "text": "懒散精神", "isCorrect": false },
+                  { "text": "女排精神 (顽强拼搏)", "isCorrect": true },
+                  { "text": "个人主义精神", "isCorrect": false },
+                  { "text": "放弃精神", "isCorrect": false }
+                ],
+                "category": "体育明星"
+              },
+              {
+                "id": 44,
+                "questionText": "运动时穿着不合适的鞋子，可能会导致什么问题？",
+                "options": [
+                  { "text": "跑得更快", "isCorrect": false },
+                  { "text": "脚部受伤或不舒服", "isCorrect": true },
+                  { "text": "鞋子更耐穿", "isCorrect": false },
+                  { "text": "没有任何问题", "isCorrect": false }
+                ],
+                "category": "体育安全"
+              },
+              {
+                "id": 45,
+                "questionText": "做准备活动时，应该先活动身体的哪个部位？",
+                "options": [
+                  { "text": "只活动腿部", "isCorrect": false },
+                  { "text": "从上到下，活动全身主要关节", "isCorrect": true },
+                  { "text": "只活动手臂", "isCorrect": false },
+                  { "text": "不需要活动", "isCorrect": false }
+                ],
+                "category": "健康知识"
+              },
+              {
+                "id": 46,
+                "questionText": "冬季奥林匹克运动会主要进行的是什么类型的运动项目？",
+                "options": [
+                  { "text": "水上运动", "isCorrect": false },
+                  { "text": "冰雪运动", "isCorrect": true },
+                  { "text": "球类运动", "isCorrect": false },
+                  { "text": "田径运动", "isCorrect": false }
+                ],
+                "category": "奥运会"
+              },
+              {
+                "id": 47,
+                "questionText": "篮球比赛中，运球时眼睛应该主要看哪里？",
+                "options": [
+                  { "text": "一直盯着球", "isCorrect": false },
+                  { "text": "观察整个场地和队友对手的位置", "isCorrect": true },
+                  { "text": "看自己的脚", "isCorrect": false },
+                  { "text": "看观众席", "isCorrect": false }
+                ],
+                "category": "篮球"
+              },
+              {
+                "id": 48,
+                "questionText": "世界杯足球赛每几年举办一次？",
+                "options": [
+                  { "text": "每两年", "isCorrect": false },
+                  { "text": "每三年", "isCorrect": false },
+                  { "text": "每四年", "isCorrect": true },
+                  { "text": "每年", "isCorrect": false }
+                ],
+                "category": "世界杯"
+              },
+              {
+                "id": 49,
+                "questionText": "被称为“体操王子”的中国著名体操运动员是？",
+                "options": [
+                  { "text": "刘翔", "isCorrect": false },
+                  { "text": "李宁", "isCorrect": true },
+                  { "text": "孙杨", "isCorrect": false },
+                  { "text": "林丹", "isCorrect": false }
+                ],
+                "category": "体育明星"
+              },
+              {
+                "id": 50,
+                "questionText": "在进行跑步、跳绳等运动前，检查场地是否安全是为了防止什么？",
+                "options": [
+                  { "text": "跑得太快", "isCorrect": false },
+                  { "text": "摔倒或受伤", "isCorrect": true },
+                  { "text": "衣服弄脏", "isCorrect": false },
+                  { "text": "浪费时间", "isCorrect": false }
+                ],
+                "category": "体育安全"
+              }
+            ]`;
+            allQuestions = JSON.parse(questionsJsonContent);
+            availableQuestions = [...allQuestions];
+
+            // --- Helper Functions ---
+            function switchScreen(activeScreen) {
+                [startScreen, quizScreen, roundEndScreen].forEach(screen => {
+                    screen.classList.remove("active-v2");
+                });
+                activeScreen.classList.add("active-v2");
+            }
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+
+            function selectRoundQuestions() {
+                if (availableQuestions.length < QUESTIONS_PER_ROUND) {
+                    console.warn("Not enough unique questions for a full round. Resetting available questions.");
+                    availableQuestions = [...allQuestions]; 
+                    if (availableQuestions.length < QUESTIONS_PER_ROUND) {
+                        alert("题库题目不足，无法开始新的一轮！请联系管理员添加更多题目。");
+                        return false;
+                    }
+                }
+                shuffleArray(availableQuestions);
+                currentRoundQuestions = availableQuestions.slice(0, QUESTIONS_PER_ROUND);
+                availableQuestions.splice(0, QUESTIONS_PER_ROUND);
+                return true;
+            }
+
+            function updateScores() {
+                player1ScoreDisplay.textContent = player1Score;
+                player2ScoreDisplay.textContent = player2Score;
+            }
+
+            function resetBuzzButtons() {
+                player1BuzzButton.disabled = false;
+                player2BuzzButton.disabled = false;
+                player1BuzzButton.classList.remove("disabled");
+                player2BuzzButton.classList.remove("disabled");
+            }
+
+            function disableBuzzButtons() {
+                player1BuzzButton.disabled = true;
+                player2BuzzButton.disabled = true;
+                player1BuzzButton.classList.add("disabled");
+                player2BuzzButton.classList.add("disabled");
+            }
+
+            function clearOptions() {
+                player1OptionsArea.innerHTML = "";
+                player2OptionsArea.innerHTML = "";
+            }
+
+            function displayQuestion() {
+                if (currentQuestionIndex >= currentRoundQuestions.length) {
+                    endRound();
+                    return;
+                }
+                const question = currentRoundQuestions[currentQuestionIndex];
+                questionTextDisplay.textContent = question.questionText;
+                currentQuestionNumberDisplay.textContent = currentQuestionIndex + 1;
+                
+                if (question.image) {
+                    questionImage.src = question.image;
+                    questionImage.style.display = "block";
+                    questionImageContainer.style.display = "block";
+                } else {
+                    questionImage.src = "";
+                    questionImage.style.display = "none";
+                    questionImageContainer.style.display = "none";
+                }
+
+                clearOptions();
+                resetBuzzButtons();
+                buzzedPlayer = null;
+                answerSelected = false;
+                feedbackTextDisplay.textContent = "请抢答！";
+                feedbackTextDisplay.className = ""; 
+                startTimer();
+            }
+
+            function startTimer() {
+                clearInterval(timerInterval);
+                timeLeft = ROUND_TIME_LIMIT;
+                timeLeftDisplay.textContent = timeLeft;
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timeLeftDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        if (!buzzedPlayer) { 
+                            handleNoBuzz();
+                        } else if (!answerSelected) { 
+                            handleAnswer(null, currentRoundQuestions[currentQuestionIndex], null, buzzedPlayer === 1 ? player1OptionsArea : player2OptionsArea);
+                        }
+                    }
+                }, 1000);
+            }
+
+            function handleNoBuzz() {
+                feedbackTextDisplay.textContent = "本题无人抢答！";
+                feedbackTextDisplay.className = "incorrect";
+                disableBuzzButtons();
+                clearOptions();
+                setTimeout(nextQuestion, 2000); 
+            }
+
+            function handleBuzz(player) {
+                if (buzzedPlayer || timeLeft <= 0 || answerSelected) return; 
+
+                clearInterval(timerInterval); 
+                buzzedPlayer = player;
+                disableBuzzButtons(); 
+
+                const activePlayerName = player === 1 ? player1Name : player2Name;
+                feedbackTextDisplay.textContent = `${activePlayerName} 抢答成功！请作答！`;
+                feedbackTextDisplay.className = player === 1 ? "buzz-player1" : "buzz-player2";
+
+                const question = currentRoundQuestions[currentQuestionIndex];
+                const optionsArea = player === 1 ? player1OptionsArea : player2OptionsArea;
+                optionsArea.innerHTML = ""; 
+
+                question.options.forEach(option => {
+                    const button = document.createElement("button");
+                    button.textContent = option.text;
+                    button.classList.add("option-button-v2");
+                    button.addEventListener("click", () => handleAnswer(option, question, button, optionsArea));
+                    optionsArea.appendChild(button);
+                });
+            }
+
+            function handleAnswer(selectedOption, question, clickedButton, optionsArea) {
+                if (answerSelected) return; 
+                answerSelected = true;
+                clearInterval(timerInterval); 
+                disableBuzzButtons(); 
+
+                const allOptionButtons = optionsArea.querySelectorAll(".option-button-v2");
+                allOptionButtons.forEach(btn => btn.classList.add("disabled"));
+
+                let correct = false;
+                if (selectedOption) { 
+                     correct = selectedOption.isCorrect;
+                }
+
+                if (correct) {
+                    if (buzzedPlayer === 1) player1Score++;
+                    if (buzzedPlayer === 2) player2Score++;
+                    updateScores();
+                    feedbackTextDisplay.textContent = "回答正确！太棒了！";
+                    feedbackTextDisplay.className = "correct";
+                    if(clickedButton) clickedButton.classList.add("correct");
+                } else {
+                    feedbackTextDisplay.textContent = "回答错误！";
+                    feedbackTextDisplay.className = "incorrect";
+                    if(clickedButton) clickedButton.classList.add("incorrect");
+                    
+                    const correctAnswerData = question.options.find(opt => opt.isCorrect);
+                    if (correctAnswerData) {
+                        feedbackTextDisplay.textContent += ` 正确答案是：${correctAnswerData.text}`;
+                        const correctButton = Array.from(allOptionButtons).find(btn => btn.textContent === correctAnswerData.text);
+                        if (correctButton) {
+                            correctButton.classList.remove("incorrect"); 
+                            correctButton.classList.add("correct");
+                        }
+                    }
+                }
+                setTimeout(nextQuestion, 3000); 
+            }
+
+            function nextQuestion() {
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+
+            function startRound() {
+                player1Name = player1NameInput.value.trim() || "蓝队";
+                player2Name = player2NameInput.value.trim() || "红队";
+                player1NameDisplay.textContent = player1Name;
+                player2NameDisplay.textContent = player2Name;
+
+                if (!selectRoundQuestions()) {
+                    switchScreen(startScreen); 
+                    return;
+                }
+                winnerAnnouncement.style.display = "none"; // Hide winner text at start of new round
+                celebrationContainer.innerHTML = ""; // Clear any old celebration elements
+
+                currentQuestionIndex = 0;
+                player1Score = 0;
+                player2Score = 0;
+                updateScores();
+                switchScreen(quizScreen);
+                displayQuestion();
+            }
+            
+            // --- NEW Animation Functions ---
+            function createParticle(xExplosion, yExplosion) {
+                const particle = document.createElement("div");
+                particle.classList.add("particle");
+                const colors = ["#FFD700", "#FF69B4", "#00FFFF", "#7FFF00", "#FF4500", "#DAA520"];
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = (xExplosion + (Math.random() - 0.5) * 180) + "px"; // Spread within 180px diameter
+                particle.style.top = (yExplosion + (Math.random() - 0.5) * 180) + "px";
+                celebrationContainer.appendChild(particle);
+                setTimeout(() => particle.remove(), 800); // Match CSS animation duration
+            }
+
+            function createFirework(x, explosionY) { 
+                const fireworkVisual = document.createElement("div");
+                fireworkVisual.classList.add("firework");
+                fireworkVisual.style.left = x + "px";
+                fireworkVisual.style.bottom = "0px"; 
+                celebrationContainer.appendChild(fireworkVisual);
+
+                fireworkVisual.addEventListener("animationend", () => {
+                    fireworkVisual.remove();
+                    for (let i = 0; i < 35; i++) { // More particles
+                        createParticle(x, explosionY); 
+                    }
+                });
+            }
+
+            function createConfetti() {
+                const confetti = document.createElement("div");
+                confetti.classList.add("confetti");
+                confetti.style.left = Math.random() * celebrationContainer.offsetWidth + "px";
+                const colors = ["#FFD700", "#FF69B4", "#00FFFF", "#7FFF00", "#FF4500", "#DA70D6", "#87CEEB", "#FFC0CB"];
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 6 + 8; // 8px to 14px
+                confetti.style.width = size + "px";
+                confetti.style.height = size * (Math.random() * 0.5 + 0.75) + "px"; // Vary aspect ratio
+                if (Math.random() > 0.8) {
+                    confetti.style.borderRadius = "50%"; 
+                }
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                celebrationContainer.appendChild(confetti);
+                // CSS handles removal via animation opacity
+            }
+
+            function startCelebration() {
+                celebrationContainer.innerHTML = ""; 
+                roundEndScreen.classList.add("celebrating");
+
+                for (let i = 0; i < 4; i++) { // 4 fireworks
+                    setTimeout(() => {
+                        const x = Math.random() * (celebrationContainer.offsetWidth * 0.7) + (celebrationContainer.offsetWidth * 0.15);
+                        const explosionY = Math.random() * (celebrationContainer.offsetHeight * 0.25) + (celebrationContainer.offsetHeight * 0.1);
+                        createFirework(x, explosionY);
+                    }, i * 400); 
+                }
+
+                for (let i = 0; i < 120; i++) { // 120 confetti pieces
+                    setTimeout(createConfetti, Math.random() * 2500); 
+                }
+
+                setTimeout(() => {
+                    roundEndScreen.classList.remove("celebrating");
+                }, 5000); 
+            }
+
+            // --- MODIFIED endRound Function ---
+            function endRound() {
+                switchScreen(roundEndScreen);
+                player1FinalName.textContent = player1Name;
+                player1FinalScore.textContent = player1Score;
+                player2FinalName.textContent = player2Name;
+                player2FinalScore.textContent = player2Score;
+
+                let evaluation = "";
+                let winnerName = "";
+                let isTie = false;
+
+                if (player1Score > player2Score) {
+                    winnerName = player1Name;
+                    evaluation = `${player1Name} 获胜！真是太厉害了！恭喜！`;
+                    winnerTextLarge.style.color = "#2196F3"; // Player 1 color (Blue)
+                } else if (player2Score > player1Score) {
+                    winnerName = player2Name;
+                    evaluation = `${player2Name} 表现出色！恭喜获胜！`;
+                    winnerTextLarge.style.color = "#F44336"; // Player 2 color (Red)
+                } else {
+                    isTie = true;
+                    evaluation = "平局！两位小将都非常棒！下次再战！";
+                    winnerTextLarge.style.color = "#7CB342"; // Neutral/Positive color for tie (e.g., Green)
+                }
+                roundEvaluationDisplay.textContent = evaluation;
+                
+                winnerTextLarge.textContent = isTie ? "旗鼓相当！" : `${winnerName} 获胜！`;
+                winnerTextLarge.style.animation = 'none'; // Reset animation for replay
+                winnerTextLarge.offsetHeight; /* Trigger reflow */ 
+                winnerTextLarge.style.animation = ''; 
+                winnerAnnouncement.style.display = "block";
+                
+                startCelebration(); 
+            }
+            // --- End of New/Modified JS ---
+
+            // Event Listeners
+            startRoundButton.addEventListener("click", startRound);
+            restartRoundButton.addEventListener("click", () => {
+                winnerAnnouncement.style.display = "none"; // Hide winner text for new game
+                celebrationContainer.innerHTML = ""; // Clear any leftover celebration elements
+                switchScreen(startScreen); 
+            });
+
+            player1BuzzButton.addEventListener("click", () => handleBuzz(1));
+            player2BuzzButton.addEventListener("click", () => handleBuzz(2));
+
+            // Initial Setup
+            switchScreen(startScreen);
+        });
+    </script>
+</body>
+</html>
